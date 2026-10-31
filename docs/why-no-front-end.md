@@ -13,8 +13,9 @@ That layer used to be the whole product, because talking to a database was hard.
 
 ## What you give up
 
-- **A visual board.** Stages are a table you ask about, not cards you drag.
-- **A phone app.** It runs where Claude Code runs.
+- **A live flight watch.** The schedule is a table you ask about, not a timeline that moves as aircraft report in.
+- **A crew app.** Pilots do not tap their journey log into a phone; the ops desk or the pilot logs it by asking.
+- **Marketplace and flight planning connections.** No Avinode quotes coming in, no flight plans filed. Those are connections, built when you need them.
 - **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
 
 ## Who this fits

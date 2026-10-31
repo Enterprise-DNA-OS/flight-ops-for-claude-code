@@ -22,9 +22,35 @@ Fill this in once. A worker with context knows. A worker without it guesses.
 
 | When the operator asks for... | Use this |
 |---|---|
-| <!-- TODO(author): one row per slash command --> | `/...` |
+| tomorrow's flying, go or no-go | `/flying-tomorrow`, `/tomorrow` |
+| what needs chasing | `/attention` |
+| the schedule from today on | `/schedule` |
+| a price for a charter | `/quote`, `/draft-quote`, `/send`, `/decline` |
+| the client said yes | `/book`, `/leg`, `/confirm`, `/draft-confirmation` |
+| who flies it | `/assign`, `/pilot`, `/currency` |
+| passengers and weights | `/pax`, `/trip` |
+| log the day's flying | `/end-of-day`, `/to-log`, `/fly`, `/duty`, `/complete` |
+| a correction to a logged leg | `/log` |
+| hours, duty and rest against the limits | `/crew-hours`, `/duties`, `/crew-check` |
+| the chief pilot's review | `/chief-pilot` |
+| new medical, review or check | `/renew` |
+| a type rating | `/rate` |
+| aircraft hours, checks, reviews | `/fleet`, `/fleet-check`, `/check-done` |
+| a defect | `/defect`, `/clear`, `/serviceable`, `/defects` |
+| hours flown per aircraft | `/utilisation` |
+| invoicing | `/uninvoiced`, `/invoice`, `/client-flying` |
+| how quotes are converting | `/quote-conversion`, `/quotes` |
+| the Monday review | `/weekly-review` |
+| records against the rules | `/compliance` |
+| the flight and duty limits | `/limits`, `/limit` |
+| new base, aircraft, crew, client or trip | `/add` |
+| lists | `/bases`, `/aircraft`, `/crew`, `/clients`, `/trips`, `/journey-log` |
+| bring data from Leon | `/import` |
+| a copy of everything | `/export` |
+| change a field or rule | `/customise` |
+| a new dashboard | `/new-view` |
 
-If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) and then propose a new command for it.
+If an ask fits nothing here, run the CLI directly (`npm run ops -- help`) and then propose a new command for it.
 
 ## Hard rules
 
@@ -32,6 +58,11 @@ If an ask fits nothing here, run the CLI directly (`npm run <cli> -- --help`) an
 - Never delete records without an explicit yes in this session. Prefer marking closed or archived.
 - Never invent a record. If a name is ambiguous, list the candidates and ask.
 - The database is the source of truth. If the answer is not in it, say so.
+- Every time is UTC. Say so when you show one.
+- A logged leg keeps its block times, air times and landings. Corrections are a note on the trip, never an edit.
+- Never override a pilot check (`assign --force`), defer a defect or change a limit on your own judgement. The chief pilot, the engineer or the person named in the exposition says yes in this session.
+- The limits table holds the operator's scheme. Never tell anyone a flight is legal or a pilot is fit to fly; say what the records show against the limits set.
+- A trip with a problem goes to the chief pilot before the client hears anything.
 
 ## Where things live
 

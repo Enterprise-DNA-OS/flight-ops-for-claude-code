@@ -1,14 +1,31 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Flight Ops for Claude Code: what needs attention, rendered by npm run view",
+    "title": "The flying week",
+    "subtitle": "Trips booked, what would stop each one, and what needs chasing",
     "sections": [
-      {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
-      }
+      { "title": "Schedule", "note": "Times are UTC.", "sql": "select code,flight_date,first_std,status,client,aircraft,pic,route,pax,manifest,problems from v_schedule order by flight_date,first_std,code" },
+      { "title": "Needs attention", "sql": "select kind,record,due,detail from v_attention order by due,kind,record" }
+    ]
+  },
+  {
+    "name": "crew",
+    "title": "Crew hours and currency",
+    "subtitle": "Flight and duty time against the scheme, medicals, reviews, checks and recency",
+    "sections": [
+      { "title": "Flight and duty hours", "note": "Limits come from the limits table. Set them from your approved flight and duty scheme.", "sql": "select crew,name,flight_7d,limit_7d,flight_28d,limit_28d,flight_365d,limit_365d,duty_7d,duty_limit_7d from v_crew_hours order by crew" },
+      { "title": "Currency", "sql": "select crew,name,medical_expiry,medical_days,review_due,check_due,landings_90d,pax_current,types from v_currency order by crew" },
+      { "title": "Duty and rest findings", "sql": "select rule,record,issue from v_compliance where rule like 'FTL-%' order by rule,record" }
+    ]
+  },
+  {
+    "name": "fleet",
+    "title": "Fleet status",
+    "subtitle": "Hours to the next check, airworthiness reviews, defects and utilisation",
+    "sections": [
+      { "title": "Aircraft", "sql": "select code,type,base,status,hours,next_check_name,hours_to_check,arc_expiry,days_to_arc,open_defects,deferred_defects from v_fleet order by code" },
+      { "title": "Open and deferred defects", "sql": "select d.code,a.code aircraft,d.raised_on,d.description,d.deferred,d.due_on from defects d join aircraft a on a.id=d.aircraft_id where d.cleared_on is null order by d.due_on nulls first,d.code" },
+      { "title": "Hours flown, last 90 days", "sql": "select aircraft,count(distinct trip) trips,sum(air_hours) air_hours,sum(fuel_l) fuel_l from v_legs where logged and flight_date>=current_date-90 group by aircraft order by air_hours desc" }
     ]
   }
 ]

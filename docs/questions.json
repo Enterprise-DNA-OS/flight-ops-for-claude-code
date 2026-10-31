@@ -1,0 +1,12 @@
+[
+  ["Which trips tomorrow should not go as planned, and why?", "tomorrow"],
+  ["Which pilots are short of the take-offs and landings to carry passengers this week?", "crew-check"],
+  ["Who had less rest than the scheme allows before a duty in the last 90 days?", "crew-check"],
+  ["Which medicals, flight reviews and operator checks fall due in the next 45 days?", "currency"],
+  ["Which aircraft will reach its next check before the end of the week at its current rate?", "fleet"],
+  ["Which deferred defects are past their date, and is anything booked on that aircraft?", "defects"],
+  ["Which flights carried more passengers than the manifest lists?", "compliance"],
+  ["Which trips tomorrow are over payload with the manifest weights?", "tomorrow"],
+  ["Which flown trips have no invoice yet, and what are they worth?", "uninvoiced"],
+  ["Which quotes are waiting on the client, and how many of our quotes get accepted?", "quote-conversion"]
+]

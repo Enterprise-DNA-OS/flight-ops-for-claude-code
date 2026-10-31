@@ -1,11 +1,52 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
-    "file": "name",
+    "name": "flight-brief",
+    "title": "Flight brief",
+    "for_each": "select id,code from trips where status in ('planned','confirmed') order by code",
+    "file": "code",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      { "title": "Trip", "layout": "record", "sql": "select code,flight_date,status,purpose,client,aircraft,aircraft_type,pic_name pilot,pax,manifest,payload_kg,max_payload_kg from v_trips where trip_id=$1" },
+      { "title": "Legs (UTC)", "sql": "select l.seq,l.dep,l.arr,to_char(l.std at time zone 'UTC','HH24:MI') std,l.pax from legs l where l.trip_id=$1 order by l.seq" },
+      { "title": "Before this trip goes", "note": "Every problem the records show. The pilot in command makes the go decision.", "sql": "select coalesce(nullif(problems,''),'None recorded') problems from v_schedule s join trips t on t.code=s.code where t.id=$1" }
+    ]
+  },
+  {
+    "name": "passenger-manifest",
+    "title": "Passenger manifest",
+    "for_each": "select id,code from trips where status<>'cancelled' order by code",
+    "file": "code",
+    "sections": [
+      { "title": "Flight", "layout": "record", "sql": "select code,flight_date,aircraft,aircraft_type,pic_name pilot,route,pax from v_trips where trip_id=$1" },
+      { "title": "Passengers", "note": "Check the manifest fields your operator exposition requires before using this as your record.", "sql": "select name,weight_kg,bags_kg from passengers where trip_id=$1 order by name" }
+    ]
+  },
+  {
+    "name": "journey-log",
+    "title": "Journey log",
+    "for_each": "select id,code from trips where status='flown' order by code",
+    "file": "code",
+    "sections": [
+      { "title": "Trip", "layout": "record", "sql": "select code,flight_date,aircraft,aircraft_type,pic_name pilot,client from v_trips where trip_id=$1" },
+      { "title": "Sectors (UTC)", "sql": "select seq,dep,arr,off_utc,on_utc,block_hours,air_hours,landings,pax,fuel_l from v_legs where trip=(select code from trips where id=$1) order by seq" }
+    ]
+  },
+  {
+    "name": "charter-quote",
+    "title": "Charter quote",
+    "for_each": "select id,code from quotes where status in ('draft','sent') order by code",
+    "file": "code",
+    "sections": [
+      { "title": "Your flight", "layout": "record", "sql": "select q.code quote,cl.name client,q.flight_date,q.route,q.pax passengers,a.type aircraft,q.est_hours estimated_hours,q.rate hourly_rate,q.extras,q.price total,q.valid_until from quotes q join clients cl on cl.id=q.client_id join aircraft a on a.id=q.aircraft_id where q.id=$1" }
+    ]
+  },
+  {
+    "name": "crew-record",
+    "title": "Pilot hours and currency",
+    "for_each": "select id,code from crew where role='pilot' order by code",
+    "file": "code",
+    "sections": [
+      { "title": "Currency", "layout": "record", "sql": "select name,medical_class,medical_expiry,review_due,check_due,landings_90d,pax_current,types from v_currency where crew_id=$1" },
+      { "title": "Duty periods, last 28 days (UTC)", "sql": "select kind,starts,ends,duty_hours,rest_before_hours from v_duties v join crew c on c.code=v.crew where c.id=$1 and v.start_at>=now()-interval '28 days' order by v.start_at" }
     ]
   }
 ]
